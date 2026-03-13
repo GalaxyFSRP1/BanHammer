@@ -9,13 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-
+import org.bukkit.ChatColor;
 import java.util.Arrays;
 import java.util.List;
 
 public class BanHammerCommand implements CommandExecutor {
 
     private final BanHammer plugin;
+    private final List<String> hammerTypes = Arrays.asList("normal", "ip", "temp", "mass");
 
     public BanHammerCommand(BanHammer plugin) {
         this.plugin = plugin;
@@ -23,57 +24,85 @@ public class BanHammerCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("banhammer.give")) {
-            sender.sendMessage("§cNo permission!");
+        if (!sender.hasPermission("banhammer.admin")) {
+            sender.sendMessage(ChatColor.RED + "No permission!");
             return true;
         }
 
-        if (args.length < 2 || !args[0].equalsIgnoreCase("give")) {
-            sender.sendMessage("§cUsage: /banhammer give <player> [reason] [ipban:true/false]");
+        if (args.length == 0) {
+            sender.sendMessage(ChatColor.GOLD + "BanHammer v1.0 - /banhammer <give|list|reload|stats>");
+            return true;
+        }
+
+        switch (args[0].toLowerCase()) {
+            case "give":
+                return giveHammer(sender, args);
+            case "list":
+                sender.sendMessage(ChatColor.GREEN + "Available hammers: " + String.join(ChatColor.GRAY + ", ", hammerTypes));
+                return true;
+            case "reload":
+                plugin.reloadConfig();
+                sender.sendMessage(ChatColor.GREEN + "Config reloaded!");
+                return true;
+            case "stats":
+                sender.sendMessage(ChatColor.GOLD + "BanHammer Stats - Bans today: " + plugin.getConfig().getInt("stats.bans", 0));
+                return true;
+            default:
+                sender.sendMessage(ChatColor.RED + "Unknown subcommand. Use: give, list, reload, stats");
+        }
+        return true;
+    }
+
+    private boolean giveHammer(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /banhammer give <player> <normal|ip|temp> [reason] [duration]");
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            sender.sendMessage("§cPlayer not found!");
+            sender.sendMessage(ChatColor.RED + "Player not online!");
             return true;
         }
 
-        String reason = plugin.getConfig().getString("ban-reason", "Banned by BanHammer!");
-        boolean ipBan = plugin.getConfig().getBoolean("ip-ban", false);
-
-        if (args.length > 2) {
-            String lastArg = args[args.length - 1];
-            if (lastArg.equalsIgnoreCase("true")) {
-                ipBan = true;
-            } else if (lastArg.equalsIgnoreCase("false")) {
-                ipBan = false;
-            }
-            reason = args.length > 3 ? String.join(" ", Arrays.copyOfRange(args, 2, args.length - 1)) : plugin.getConfig().getString("ban-reason", "Banned by BanHammer!");
+        String type = args[2].toLowerCase();
+        if (!hammerTypes.contains(type)) {
+            sender.sendMessage(ChatColor.RED + "Type: " + String.join(", ", hammerTypes));
+            return true;
         }
 
-        ItemStack banHammer = createBanHammer(reason, ipBan);
-        target.getInventory().addItem(banHammer);
-        sender.sendMessage("§aGave BanHammer to " + target.getName() + " (IP Ban: " + ipBan + ")");
-        target.sendMessage("§eYou received the BanHammer!");
+        String reason = args.length > 3 ? String.join(" ", Arrays.copyOfRange(args, 3, args.length)) : plugin.getConfig().getString("ban-reason", "Banned");
+        boolean ipBan = type.equals("ip");
+        String hammerName = ChatColor.translateAlternateColorCodes('&', switch(type) {
+            case "normal" -> "&c&lBan Hammer";
+            case "ip" -> "&4&lIP Ban Hammer";
+            case "temp" -> "&6&lTemp Ban Hammer";
+            case "mass" -> "&0&lMass Ban Hammer";
+            default -> "&c&lBan Hammer";
+        });
 
-        return true;
-    }
-
-    private ItemStack createBanHammer(String reason, boolean ipBan) {
         ItemStack item = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§c§lBan Hammer");
-        meta.setLore(Arrays.asList("§7Infinite damage", "§7Kills → BAN!", "§7Reason: " + reason, "§7IP Ban: " + ipBan, "§8Unbreakable"));
+        meta.setDisplayName(hammerName);
+        meta.setLore(Arrays.asList(
+            ChatColor.GRAY + "Type: " + type.toUpperCase(),
+            ChatColor.GRAY + "Reason: " + reason,
+            ChatColor.RED + "Right click to ban!"
+        ));
         meta.setUnbreakable(true);
 
-        // Store data
+        // Data
         meta.getPersistentDataContainer().set(plugin.getNamespaceKey("banhammer"), PersistentDataType.STRING, "true");
         meta.getPersistentDataContainer().set(plugin.getNamespaceKey("reason"), PersistentDataType.STRING, reason);
         meta.getPersistentDataContainer().set(plugin.getNamespaceKey("ipban"), PersistentDataType.BOOLEAN, ipBan);
+        meta.getPersistentDataContainer().set(plugin.getNamespaceKey("type"), PersistentDataType.STRING, type);
 
         item.setItemMeta(meta);
-        return item;
+        target.getInventory().addItem(item);
+
+        sender.sendMessage(ChatColor.GREEN + "Gave " + ChatColor.GOLD + type + ChatColor.GREEN + " hammer to " + target.getName());
+        target.sendMessage(ChatColor.GREEN + "You received a " + hammerName + ChatColor.GREEN + "!");
+        return true;
     }
 }
 
