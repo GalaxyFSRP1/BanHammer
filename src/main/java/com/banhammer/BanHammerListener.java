@@ -40,8 +40,8 @@ public class BanHammerListener implements Listener {
         attacker.playSound(attacker.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 2.0f);
         
         // Particles
-        victim.getWorld().spawnParticle(org.bukkit.Particle.EXPLOSION_NORMAL, victim.getLocation().add(0, 1, 0), 10, 0.5, 0.5, 0.5, 0.1);
-        attacker.getWorld().spawnParticle(org.bukkit.Particle.VILLAGER_HAPPY, attacker.getLocation().add(0, 1, 0), 30, 0.3, 0.3, 0.3, 0);
+        victim.getWorld().spawnParticle(org.bukkit.Particle.EXPLOSION_LARGE, victim.getLocation().add(0, 1, 0), 5, 0.2, 0.2, 0.2, 0);
+        attacker.getWorld().spawnParticle(org.bukkit.Particle.FIREWORK, attacker.getLocation().add(0, 1, 0), 20, 0.5, 0.5, 0.5, 0.05);
         
         if (ipBan) {
             Bukkit.getBanList(org.bukkit.BanList.Type.IP).addBan(victim.getAddress().getAddress().getHostAddress(), reason, null, attacker.getName());
