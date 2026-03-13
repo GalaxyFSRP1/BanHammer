@@ -58,7 +58,7 @@ public class BanHammerListener implements Listener {
         }
         victim.kickPlayer("§c§lBANNED §7by BanHammer\n§eReason: §f" + reason);
         
-        Bukkit.broadcastMessage("§c§l[BanHammer] §7" + victim.getName() + " §7banned by §c§l" + attacker.getName() + " §7(IP: " + ipBan + ") §e" + reason);
+        Bukkit.broadcastMessage("§c§l[BanHammer] §7" + victim.getName() + " §7banned by §c§l" + attacker.getName() + " §7§e" + reason);
         event.setCancelled(true);
         attacker.sendMessage("§a§lINSTANT BAN §f" + victim.getName());
     }

@@ -1,4 +1,27 @@
-# BanHammer Config
-ban-reason: "Banned by the BanHammer!"
+# BanHammer Advanced Config
+
+ban-reason: "Banned by BanHammer"
 ip-ban: false
+
+# Effects
+effects:
+  sound-victim: "ENTITY_WITHER_SPAWN"
+  sound-attacker: "ENTITY_PLAYER_LEVELUP"
+  particle-victim: "EXPLOSION"
+  particle-attacker: "HEART"
+  enabled: true
+
+# Stats
+stats:
+  bans: 0
+  ip-bans: 0
+
+# Cooldown (ticks)
+cooldown: 20
+
+# Messages
+messages:
+  banned: "§c§lBANNED §7by BanHammer\n§eReason: §f{reason}"
+  complete: "§a§lBAN COMPLETE §f{player}"
+  broadcast: "§c§l[BanHammer] §7{player} §7banned by §c§l{attacker} §7(IP: {ip}) §e{reason}"
 
