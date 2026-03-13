@@ -17,5 +17,6 @@ commands:
   banhammer:
     description: BanHammer main command
     usage: /banhammer give <player> [reason] [ipban]
-    permission: banhammer.give
+    permission: banhammer.admin
+    aliases: [bh, hammer]
 

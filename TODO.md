@@ -8,6 +8,8 @@
 [x] 5. Create BanHammerCommand.java
 [x] 6. Create BanHammerListener.java
 [x] 7. Update TODO, build instructions
+[x] 8. Enhanced commands + NamespaceKey fix
+[ ]
 
 ## Build & Deploy:
 1. Install Maven if not: Download from https://maven.apache.org/download.cgi, add to PATH.

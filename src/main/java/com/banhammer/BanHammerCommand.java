@@ -43,11 +43,13 @@ public class BanHammerCommand implements CommandExecutor {
         boolean ipBan = plugin.getConfig().getBoolean("ip-ban", false);
 
         if (args.length > 2) {
-            reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-            if (reason.equalsIgnoreCase("true")) {
+            String lastArg = args[args.length - 1];
+            if (lastArg.equalsIgnoreCase("true")) {
                 ipBan = true;
-                reason = plugin.getConfig().getString("ban-reason", "Banned by BanHammer!");
+            } else if (lastArg.equalsIgnoreCase("false")) {
+                ipBan = false;
             }
+            reason = args.length > 3 ? String.join(" ", Arrays.copyOfRange(args, 2, args.length - 1)) : plugin.getConfig().getString("ban-reason", "Banned by BanHammer!");
         }
 
         ItemStack banHammer = createBanHammer(reason, ipBan);
