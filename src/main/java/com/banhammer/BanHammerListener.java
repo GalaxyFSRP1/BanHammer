@@ -35,16 +35,25 @@ public class BanHammerListener implements Listener {
         Boolean ipBanObj = meta.getPersistentDataContainer().get(plugin.getNamespaceKey("ipban"), PersistentDataType.BOOLEAN);
         boolean ipBan = ipBanObj != null ? ipBanObj : plugin.getConfig().getBoolean("ip-ban", false);
 
+        // COOL EFFECTS + NO SPAM
+        victim.playSound(victim.getLocation(), org.bukkit.Sound.ENTITY_WITHER_SPAWN, 1.0f, 0.5f);
+        attacker.playSound(attacker.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 2.0f);
+        
+        // Particles
+        victim.getWorld().spawnParticle(org.bukkit.Particle.EXPLOSION_NORMAL, victim.getLocation().add(0, 1, 0), 10, 0.5, 0.5, 0.5, 0.1);
+        attacker.getWorld().spawnParticle(org.bukkit.Particle.VILLAGER_HAPPY, attacker.getLocation().add(0, 1, 0), 30, 0.3, 0.3, 0.3, 0);
+        
         if (ipBan) {
             Bukkit.getBanList(org.bukkit.BanList.Type.IP).addBan(victim.getAddress().getAddress().getHostAddress(), reason, null, attacker.getName());
-            Bukkit.broadcastMessage("§c§l" + victim.getName() + " §7was IP banned by §c§l" + attacker.getName() + "§7! §eReason: §f" + reason);
         } else {
             Bukkit.getBanList(org.bukkit.BanList.Type.NAME).addBan(victim.getName(), reason, null, attacker.getName());
-            Bukkit.broadcastMessage("§c§l" + victim.getName() + " §7was banned by §c§l" + attacker.getName() + "§7! §eReason: §f" + reason);
         }
         
-        event.setCancelled(true); // Don't actually kill - just ban
-        attacker.sendMessage("§a§lBanned " + victim.getName() + "§7!");
+        // Single broadcast (no spam)
+        Bukkit.broadcastMessage("§c§l[BanHammer] §7" + victim.getName() + " §7banned by §c§l" + attacker.getName() + " §7(IP: " + ipBan + ") §e" + reason);
+        
+        event.setCancelled(true);
+        attacker.sendMessage("§a§lBAN COMPLETE §7" + victim.getName());
     }
 
     @EventHandler
