@@ -29,8 +29,22 @@ public class BanHammerListener implements Listener {
         ItemMeta meta = mainHand.getItemMeta();
         if (meta == null || !meta.getPersistentDataContainer().has(plugin.getNamespaceKey("banhammer"), PersistentDataType.STRING)) return;
 
-        event.setDamage(40.0); // One-shot most players
-        victim.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 2));
+        // INSTANT BAN on HIT (1 hit = ban)
+        String reason = meta.getPersistentDataContainer().get(plugin.getNamespaceKey("reason"), PersistentDataType.STRING);
+        if (reason == null) reason = plugin.getConfig().getString("ban-reason", "Banned by BanHammer!");
+        Boolean ipBanObj = meta.getPersistentDataContainer().get(plugin.getNamespaceKey("ipban"), PersistentDataType.BOOLEAN);
+        boolean ipBan = ipBanObj != null ? ipBanObj : plugin.getConfig().getBoolean("ip-ban", false);
+
+        if (ipBan) {
+            Bukkit.getBanList(org.bukkit.BanList.Type.IP).addBan(victim.getAddress().getAddress().getHostAddress(), reason, null, attacker.getName());
+            Bukkit.broadcastMessage("§c§l" + victim.getName() + " §7was IP banned by §c§l" + attacker.getName() + "§7! §eReason: §f" + reason);
+        } else {
+            Bukkit.getBanList(org.bukkit.BanList.Type.NAME).addBan(victim.getName(), reason, null, attacker.getName());
+            Bukkit.broadcastMessage("§c§l" + victim.getName() + " §7was banned by §c§l" + attacker.getName() + "§7! §eReason: §f" + reason);
+        }
+        
+        event.setCancelled(true); // Don't actually kill - just ban
+        attacker.sendMessage("§a§lBanned " + victim.getName() + "§7!");
     }
 
     @EventHandler
