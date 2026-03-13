@@ -29,8 +29,15 @@ public class BanHammerCommand implements CommandExecutor {
             return true;
         }
 
-        if (args.length == 0) {
-            sender.sendMessage(ChatColor.GOLD + "BanHammer v1.0 - /banhammer <give|list|reload|stats>");
+        if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
+            sender.sendMessage(ChatColor.GOLD + "§6§lBanHammer PRO v5.0");
+            sender.sendMessage(ChatColor.YELLOW + "Subcommands:");
+            sender.sendMessage(ChatColor.GRAY + "• give <player> <type> [reason]");
+            sender.sendMessage(ChatColor.GRAY + "• list");
+            sender.sendMessage(ChatColor.GRAY + "• reload");
+            sender.sendMessage(ChatColor.GRAY + "• stats");
+            sender.sendMessage(ChatColor.GRAY + "• gui");
+            sender.sendMessage(ChatColor.GRAY + "• config");
             return true;
         }
 
@@ -38,18 +45,33 @@ public class BanHammerCommand implements CommandExecutor {
             case "give":
                 return giveHammer(sender, args);
             case "list":
-                sender.sendMessage(ChatColor.GREEN + "Available hammers: " + String.join(ChatColor.GRAY + ", ", hammerTypes));
+                sender.sendMessage(ChatColor.GREEN + "Hammer types: " + String.join(ChatColor.GRAY + ", ", hammerTypes));
                 return true;
             case "reload":
                 plugin.reloadConfig();
                 sender.sendMessage(ChatColor.GREEN + "Config reloaded!");
                 return true;
             case "stats":
-                sender.sendMessage(ChatColor.GOLD + "BanHammer Stats - Bans today: " + plugin.getConfig().getInt("stats.bans", 0));
+                sender.sendMessage(ChatColor.GOLD + "Stats - Bans: " + plugin.getConfig().getInt("stats.bans", 0));
+                return true;
+            case "gui":
+                if (sender instanceof Player) {
+                    ((Player) sender).openInventory(BanHammerGUI.createGUI());
+                } else {
+                    sender.sendMessage(ChatColor.RED + "GUI only for players!");
+                }
+                return true;
+            case "config":
+                if (sender instanceof Player) {
+                    ((Player) sender).openInventory(BanHammerConfigGUI.createConfigGUI());
+                } else {
+                    sender.sendMessage(ChatColor.RED + "GUI only for players!");
+                }
                 return true;
             default:
-                sender.sendMessage(ChatColor.RED + "Unknown subcommand. Use: give, list, reload, stats");
+                sender.sendMessage(ChatColor.RED + "Unknown: " + args[0] + ". Use /banhammer help");
         }
+
         return true;
     }
 
