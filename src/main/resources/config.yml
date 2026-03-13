@@ -1,0 +1,4 @@
+# BanHammer Config
+ban-reason: "Banned by the BanHammer!"
+ip-ban: false
+

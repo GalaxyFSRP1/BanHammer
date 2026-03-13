@@ -1,0 +1,21 @@
+name: BanHammer
+version: '1.0'
+main: com.banhammer.BanHammer
+api-version: '1.21'
+author: BLACKBOXAI
+description: Ban hammer plugin - infinite damage sword that bans on kill
+
+permissions:
+  banhammer.use:
+    description: Allows using the banhammer
+    default: false
+  banhammer.give:
+    description: Allows giving the banhammer to players
+    default: op
+
+commands:
+  banhammer:
+    description: BanHammer main command
+    usage: /banhammer give <player> [reason] [ipban]
+    permission: banhammer.give
+

@@ -1,0 +1,5 @@
+Plugin source 100% ready. Install VSCode Java Extension → build package → JAR in target/.
+
+New: /banhammer reload, temp ban support, attributes, more config options.
+
+Ready for Paper server!
