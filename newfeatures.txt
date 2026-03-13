@@ -1,0 +1,7 @@
+**New features added:**
+- Killstreak counter (lore)
+- Hit particles + sounds
+- /banhammer gui (easy give)
+- Temp ban option
+- Reload command
+

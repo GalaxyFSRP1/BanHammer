@@ -1,41 +1,27 @@
 # Minecraft BanHammer Plugin
 
 ## Features
-- Netherite sword "Ban Hammer" deals infinite damage (1000 + wither)
-- On kill, bans player with custom reason & optional IP ban
-- Command: `/banhammer give <player> [<reason>] [true for IP ban]`
-- Permissions: `banhammer.give` (OP default), `banhammer.use`
-- Configurable defaults in config.yml
+- Netherite sword infinite damage + ban on kill
+- Configurable reason/IP-ban
+- /banhammer give <player> [reason] [true|false]
 
-## Build (no Maven install needed)
-1. Double-click `build.bat` or run `cmd` then `build.bat`
-2. JAR in `target/BanHammer-1.0.jar`
+## Hot Reload (no restart!)
+1. **PlugMan** (install from Spigot): `/plugman load BanHammer`
+2. **Lib's Reloaded**: `/libreload`
+3. **Paper /reload confirm** (risky)
 
 ## Deploy
-Copy JAR to `plugins/`, restart server.
+1. `./mvnw.cmd clean package` → **target/BanHammer-1.0.jar**
+2. Copy to `/plugins/`
+3. `/plugman load BanHammer`
 
-## Usage
-1. `/op <yourname>`
-2. `/banhammer give <target> "hacking" true`
-3. Hit target with Ban Hammer → death → banned
+## GitHub CI
+Push → Actions → Download JAR from Artifacts/Release!
 
-Compatible with Paper 1.21.1, LuckPerms.
-
-## Source Structure
+## Test
 ```
-.
-├── pom.xml
-├── build.bat
-├── README.md
-├── TODO.md
-└── src/main/
-    ├── java/com/banhammer/
-    │   ├── BanHammer.java (main)
-    │   ├── BanHammerCommand.java
-    │   └── BanHammerListener.java
-    └── resources/
-        ├── plugin.yml
-        └── config.yml
+/op me
+/banhammer give <friend> test true
+Hit friend → banned!
 ```
 
-Plugin complete!
