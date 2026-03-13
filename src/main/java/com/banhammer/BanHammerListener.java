@@ -50,9 +50,17 @@ public class BanHammerListener implements Listener {
             Bukkit.getBanList(org.bukkit.BanList.Type.NAME).addBan(victim.getName(), reason, null, attacker.getName());
         }
 
+        // INSTANT KICK + BAN
+        if (ipBan) {
+            Bukkit.getBanList(org.bukkit.BanList.Type.IP).addBan(victim.getAddress().getAddress().getHostAddress(), reason, null, attacker.getName());
+        } else {
+            Bukkit.getBanList(org.bukkit.BanList.Type.NAME).addBan(victim.getName(), reason, null, attacker.getName());
+        }
+        victim.kickPlayer("§c§lBANNED §7by BanHammer\n§eReason: §f" + reason);
+        
         Bukkit.broadcastMessage("§c§l[BanHammer] §7" + victim.getName() + " §7banned by §c§l" + attacker.getName() + " §7(IP: " + ipBan + ") §e" + reason);
         event.setCancelled(true);
-        attacker.sendMessage("§a§lBAN COMPLETE §f" + victim.getName());
+        attacker.sendMessage("§a§lINSTANT BAN §f" + victim.getName());
     }
 }
 
